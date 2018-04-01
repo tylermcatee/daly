@@ -1,0 +1,46 @@
+<body>
+</body>
+
+<script src="../ui/ui.js"></script>
+<!-- <script src="../segmentedContainerViewController.js"></script> -->
+
+<script>
+
+class MainViewController extends ViewController {
+
+	viewDidLoad() {
+		super.viewDidLoad();
+
+		this.leftView = View.viewWithFrame(100.0, 0, this.view.width, 100.0);
+		this.leftView.setBackgroundColor('red');
+		this.rightView = View.viewWithFrame(200.0, 0, 100.0, 100.0);
+		this.rightView.setBackgroundColor('blue');
+
+		this.view.addSubview(this.leftView);
+		this.view.addSubview(this.rightView);
+	}
+
+	layoutLeftView() {
+		this.leftView.setX(0);
+		this.leftView.setY(0);
+		this.leftView.setHeight(this.view.height);
+		this.leftView.setWidth(this.view.width/2.0);
+	}
+
+	layoutRightView() {
+		this.rightView.setX(this.view.width/2.0);
+		this.rightView.setY(0);
+		this.rightView.setHeight(this.view.height);
+		this.rightView.setWidth(this.view.width/2.0);
+	}
+
+	windowDidResize() {
+        this.layoutRightView();
+        this.layoutLeftView();
+    }
+}
+
+var viewController = new MainViewController();
+Window.mainWindow().setRootViewController(viewController);
+
+</script>

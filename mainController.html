@@ -1,42 +1,49 @@
 <body>
+
 </body>
 
 <script src="../ui/ui.js"></script>
-<!-- <script src="../segmentedContainerViewController.js"></script> -->
+<script src="NavigationView.js"></script>
 
 <script>
+
+var MenuPageWidth = 300;
 
 class MainViewController extends ViewController {
 
 	viewDidLoad() {
 		super.viewDidLoad();
 
-		this.leftView = View.viewWithFrame(100.0, 0, this.view.width, 100.0);
-		this.leftView.setBackgroundColor('red');
-		this.rightView = View.viewWithFrame(200.0, 0, 100.0, 100.0);
-		this.rightView.setBackgroundColor('blue');
+		this.setTitle("Brendan Daly | Photographer in Ventura Califonia");
 
-		this.view.addSubview(this.leftView);
-		this.view.addSubview(this.rightView);
+		this.menuView = NavigationView.viewWithFrame(0, 0, 0, 0);
+		this.menuView.setBackgroundColor('red');
+		this.menuView.setNavItems(['Home', 'About', 'Contact / Booking']);
+
+		this.contentView = View.viewWithFrame(0, 0, 0, 0);
+		this.contentView.setBackgroundColor('blue');
+
+		this.view.addSubview(this.menuView);
+		this.view.addSubview(this.contentView);
 	}
 
-	layoutLeftView() {
-		this.leftView.setX(0);
-		this.leftView.setY(0);
-		this.leftView.setHeight(this.view.height);
-		this.leftView.setWidth(this.view.width/2.0);
+	layoutMenuView() {
+		this.menuView.setX(0);
+		this.menuView.setY(0);
+		this.menuView.setHeight(this.view.height);
+		this.menuView.setWidth(MenuPageWidth);
 	}
 
-	layoutRightView() {
-		this.rightView.setX(this.view.width/2.0);
-		this.rightView.setY(0);
-		this.rightView.setHeight(this.view.height);
-		this.rightView.setWidth(this.view.width/2.0);
+	layoutContentView() {
+		this.contentView.setX(MenuPageWidth);
+		this.contentView.setY(0);
+		this.contentView.setHeight(this.view.height);
+		this.contentView.setWidth(this.view.width - MenuPageWidth);
 	}
 
 	windowDidResize() {
-        this.layoutRightView();
-        this.layoutLeftView();
+		this.layoutMenuView();
+        this.layoutContentView();
     }
 }
 

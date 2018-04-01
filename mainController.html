@@ -17,15 +17,26 @@ class MainViewController extends ViewController {
 
 		this.setTitle("Brendan Daly | Photographer in Ventura Califonia");
 
+		// this.view.setBackgroundColor('black');
+
+		this.containerView = View.viewWithFrame(0, 0, 0, 0);
+		this.view.addSubview(this.containerView);
+
 		this.menuView = NavigationView.viewWithFrame(0, 0, 0, 0);
-		this.menuView.setBackgroundColor('red');
+		// this.menuView.setBackgroundColor('red');
 		this.menuView.setNavItems(['Home', 'About', 'Contact / Booking']);
+		this.containerView.addSubview(this.menuView);
 
 		this.contentView = GridView.viewWithFrame(0, 0, 0, 0);
-		this.contentView.setBackgroundColor('blue');
+		this.contentView.setDelegate(this);
+		// this.contentView.setBackgroundColor('blue');
+		this.containerView.addSubview(this.contentView);
 
-		this.view.addSubview(this.menuView);
-		this.view.addSubview(this.contentView);
+		
+		this.darkeningView = View.viewWithFrame(0, 0, 0, 0);
+		this.darkeningView.setOpacity(0.0);
+		this.darkeningView.setBackgroundColor('black');
+		this.view.addSubview(this.darkeningView);
 	}
 
 	layoutMenuView() {
@@ -42,9 +53,100 @@ class MainViewController extends ViewController {
 		this.contentView.setWidth(this.view.width - MenuPageWidth);
 	}
 
+	layoutDarkeningView() {
+		this.darkeningView.setX(0);
+		this.darkeningView.setY(0);
+		this.darkeningView.setHeight(this.view.height);
+		this.darkeningView.setWidth(this.view.width);
+	}
+
 	windowDidResize() {
+		this.containerView.setX(0);
+		this.containerView.setY(0);
+		this.containerView.setHeight(this.view.height);
+		this.containerView.setWidth(this.view.width);
+
 		this.layoutMenuView();
         this.layoutContentView();
+        this.layoutDarkeningView();
+    }
+
+    gridViewDidClickSquare(square) {
+    	var darkeningView = this.darkeningView;
+    	Animation.animate(darkeningView, 0.35, function(view) {
+			view.setOpacity(0.8);
+		}, (function() {
+			
+		}).bind(this), Easing.easeInOutCubic);
+
+		Animation.animate(this.containerView, 0.25, function(view) {
+			view.setTransform(Transform.scale(0.98, 0.98));
+		}, (function() {
+			
+		}).bind(this), Easing.easeInOut);
+
+    	var spacing = 50;
+		var fullSizedSquare = View.viewWithFrame(spacing, spacing, this.view.width - 2.0 * spacing, this.view.height - 2.0 * spacing);
+		fullSizedSquare.setBackgroundColor('purple');
+		square.setOpacity(0.0);
+		this.view.addSubview(fullSizedSquare);
+
+		var widthFraction = square.width / fullSizedSquare.width;
+		var heightFraction = square.height / fullSizedSquare.height;
+		var transform = Transform.scale(widthFraction, heightFraction);
+
+		var dx = this.view.width/2.0 - (square.x + MenuPageWidth + square.width/2.0);
+		transform.x = -1.0 * dx;
+
+		var dy = this.view.height/2.0 - (square.y + square.height/2.0);
+		transform.y = -1.0 * dy;
+
+		fullSizedSquare.setTransform(transform);
+
+		var viewClickHandler = EventHandler.clickHandler(this.didClickFullSizedSquare.bind(this));
+		fullSizedSquare.addEventHandler(viewClickHandler);
+		this.enlargedSquare = square;
+
+		Animation.animate(fullSizedSquare, 0.3, function(view) {
+			view.setTransform(Transform.identity());
+		}, (function() {
+			
+		}).bind(this), Easing.easeInOutCubic);
+    }
+
+    didClickFullSizedSquare(clickHandler) {
+    	var fullSizedSquare = clickHandler.target;
+    	var square = this.enlargedSquare;
+
+    	var darkeningView = this.darkeningView;
+    	Animation.animate(darkeningView, 0.35, function(view) {
+			view.setOpacity(0.0);
+		}, (function() {
+			
+		}).bind(this), Easing.easeInCubic);
+
+		Animation.animate(this.containerView, 0.25, function(view) {
+			view.setTransform(Transform.identity());
+		}, (function() {
+			
+		}).bind(this), Easing.easeInOut);
+
+		var widthFraction = square.width / fullSizedSquare.width;
+		var heightFraction = square.height / fullSizedSquare.height;
+		var transform = Transform.scale(widthFraction, heightFraction);
+
+		var dx = this.view.width/2.0 - (square.x + MenuPageWidth + square.width/2.0);
+		transform.x = -1.0 * dx;
+
+		var dy = this.view.height/2.0 - (square.y + square.height/2.0);
+		transform.y = -1.0 * dy;
+
+		Animation.animate(fullSizedSquare, 0.3, function(view) {
+			view.setTransform(transform);
+		}, (function() {
+			fullSizedSquare.removeFromSuperview();
+			square.setOpacity(1.0);
+		}).bind(this), Easing.easeInOutCubic);
     }
 }
 

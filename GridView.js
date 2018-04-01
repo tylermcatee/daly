@@ -1,5 +1,24 @@
 var GridViewItemSpacingPercent = 0.1;
 
+class SquareView extends View {
+
+	static viewWithFrame(x, y, width, height) {
+		var newView = new SquareView();
+		newView.init();
+		newView.setX(x);
+		newView.setY(y);
+		newView.setWidth(width);
+		newView.setHeight(height);
+		return newView;
+	}
+
+	init() {
+		super.init();
+		this.row = undefined;
+		this.column = undefined;
+	}
+}
+
 class GridView extends View {
 
 	static viewWithFrame(x, y, width, height) {
@@ -88,14 +107,30 @@ class GridView extends View {
     	this.grid = this.matrix(n, rows);
     	for (var y = 0; y < rows; y++) {
     		for (var x = 0; x < n; x++) {
-    			var square = View.viewWithFrame(0, 0, 100, 100);
+    			var square = SquareView.viewWithFrame(0, 0, 100, 100);
+    			square.row = x;
+    			square.column = y;
     			square.setBackgroundColor('purple')
     			this.addSubview(square);
     			this.grid[x][y] = square;
+
+    			var squareClickHandler = EventHandler.clickHandler(this.handleSquareClick.bind(this));
+				square.addEventHandler(squareClickHandler);
     		}
     	}
 
     	this.layoutGrid();
+    }
+
+    setDelegate(delegate) {
+    	this.delegate = delegate;
+    }
+
+    handleSquareClick(clickHandler) {
+    	var square = clickHandler.target;
+    	if (this.delegate) {
+    		this.delegate.gridViewDidClickSquare(square);
+    	}
     }
 
     enumerateSquares(applier) { // applier should be (square, row, column)

@@ -20,15 +20,55 @@ class GridView extends View {
 		this.addEventHandler(viewClickHandler);
 
 		this.prototypeGridInteractions();
+		this.hidden = false;
 	}
 
 	handleClick(clickHandler) {
-     	// TODO   
+		if (this.hidden) {
+			this.hidden = false;
+			this.animateInWithCompletion();
+		} else {
+			this.hidden = true;
+			this.animateOutWithCompletion();
+		}
     }
+
+    animateOutWithCompletion(completion) {
+    	for (var column in this.grid) {
+    		var columns = this.grid[column];
+    		for (var row in columns) {
+    			var square = this.grid[column][row];
+				Animation.animate(square, 0.3, function(view) {
+					view.setOpacity(0.0);
+					view.setTransform(Transform.translate(0, -120.0));
+				}, (function() {
+					if (completion) {
+						completion()	
+					}
+				}).bind(this), Easing.easeInCubic);
+    		}
+    	}
+    }
+
+    animateInWithCompletion(completion) {
+    	this.enumerateSquares(function(square, row, column) {
+    		square.setTransform(Transform.translate(0, 50.0));
+    		Animation.animate(square, 0.2, function(view) {
+				view.setOpacity(1.0);
+				view.setTransform(Transform.translate(0, 0));
+			}, (function() {
+				
+			}).bind(this), Easing.easeOutCubic, (column + row)/100.0);
+    	});
+    }
+
+    
 
     prototypeGridInteractions() {
 		this.createGrid(3);
     }
+
+    // Grid Primitives
 
     matrix(x, y) {
     	var matrix = [];
@@ -41,8 +81,9 @@ class GridView extends View {
 		return matrix;
     }
 
+
     createGrid(n) {
-    	var rows = 10
+    	var rows = 3
     	this.n = n
     	this.grid = this.matrix(n, rows);
     	for (var y = 0; y < rows; y++) {
@@ -55,6 +96,16 @@ class GridView extends View {
     	}
 
     	this.layoutGrid();
+    }
+
+    enumerateSquares(applier) { // applier should be (square, row, column)
+    	for (var column in this.grid) {
+    		var columns = this.grid[column];
+    		for (var row in columns) {
+    			var square = this.grid[column][row];
+    			applier(square, row, column);
+    		}
+    	}
     }
 
     layoutGrid() {

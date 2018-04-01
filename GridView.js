@@ -35,21 +35,21 @@ class GridView extends View {
 		super.init();
 		this.navItems = []; // Nothing to start
 
-		var viewClickHandler = EventHandler.clickHandler(this.handleClick.bind(this));
-		this.addEventHandler(viewClickHandler);
+		// var viewClickHandler = EventHandler.clickHandler(this.handleClick.bind(this));
+		// this.addEventHandler(viewClickHandler);
 
 		this.prototypeGridInteractions();
 		this.hidden = false;
 	}
 
 	handleClick(clickHandler) {
-		if (this.hidden) {
-			this.hidden = false;
-			this.animateInWithCompletion();
-		} else {
-			this.hidden = true;
-			this.animateOutWithCompletion();
-		}
+		// if (this.hidden) {
+		// 	this.hidden = false;
+		// 	this.animateInWithCompletion();
+		// } else {
+		// 	this.hidden = true;
+		// 	this.animateOutWithCompletion();
+		// }
     }
 
     animateOutWithCompletion(completion) {
@@ -102,7 +102,7 @@ class GridView extends View {
 
 
     createGrid(n) {
-    	var rows = 3
+    	var rows = 10
     	this.n = n
     	this.grid = this.matrix(n, rows);
     	for (var y = 0; y < rows; y++) {

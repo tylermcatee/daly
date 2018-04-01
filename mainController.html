@@ -51,6 +51,8 @@ class MainViewController extends ViewController {
 		this.contentView.setY(0);
 		this.contentView.setHeight(this.view.height);
 		this.contentView.setWidth(this.view.width - MenuPageWidth);
+
+		this.contentView.setOverflow('scroll');
 	}
 
 	layoutDarkeningView() {
@@ -113,6 +115,10 @@ class MainViewController extends ViewController {
 			
 		}).bind(this), Easing.easeInOutCubic);
     }
+
+    //
+    // Idea: Make this its own view or view controller
+    // Handle this as a transition to another view controller for the larger photo view
 
     didClickFullSizedSquare(clickHandler) {
     	var fullSizedSquare = clickHandler.target;
